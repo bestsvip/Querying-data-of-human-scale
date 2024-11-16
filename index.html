@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>人体尺寸数据查询</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .checkbox-container {
+            margin: 10px;
+        }
+
+        #results {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .dimension_base label {
+            /* font-family: monospace; */
+            display: inline-block;
+            min-width: 120px;
+            text-align: left;
+        }
+
+        .dimension_functions label {
+            /* font-family: monospace; */
+            display: inline-block;
+            min-width: 180px;
+            text-align: left;
+        }
+    </style>
+    <style>
+        #myImg {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        #myImg:hover {
+            opacity: 0.7;
+        }
+
+        #myModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        #img01 {
+            margin: auto;
+            display: block;
+            width: 90%;
+            max-width: 99vw;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #caption {
+            text-align: center;
+            color: #f1f1f1;
+            font: 2em sans-serif;
+            margin-top: 40px;
+            margin-bottom: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>人体尺寸数据查询</h2>
+    <div class="checkbox-container" id="gender-container">
+        <details open>
+            <summary>选择性别（必选）</summary>
+            <label><input type="checkbox" name="gender" value="全选" id="gender_selectAll">全选</label>
+            <label><input type="checkbox" name="gender" value="男">男</label>
+            <label><input type="checkbox" name="gender" value="女">女</label>
+        </details>
+    </div>
+    <div class="checkbox-container" id="percentile-container">
+        <details open>
+            <summary>选择百分位数（必选）</summary>
+            <label><input type="checkbox" name="percentile" value="全选" id="percentile_selectAll">全选</label>
+            <label><input type="checkbox" name="percentile" value="P1">P1</label>
+            <label><input type="checkbox" name="percentile" value="P5">P5</label>
+            <label><input type="checkbox" name="percentile" value="P10">P10</label>
+            <label><input type="checkbox" name="percentile" value="P50">P50</label>
+            <label><input type="checkbox" name="percentile" value="P90">P90</label>
+            <label><input type="checkbox" name="percentile" value="P95">P95</label>
+            <label><input type="checkbox" name="percentile" value="P99">P99</label>
+        </details>
+    </div>
+    <div class="checkbox-container" id="type-container">
+        <details open>
+            <summary>选择类型（必选）</summary>
+            <label><input type="checkbox" name="type" value="按年龄分段" checked>按年龄分段</label>
+            <label><input type="checkbox" name="type" value="按地域分段">按地域分段</label>
+        </details>
+    </div>
+    <hr>
+    <div class="checkbox-container" id="ageRange-container">
+        <table>
+            <tr>
+                <td>
+                    <div>
+                        <img id="myImg" src="baseRect.jpeg" alt="基本尺寸" width="300" height="300">
+                        <div style="text-align: center;color: #555;">单击图片放大</div>
+                        <div id="myModal" class="modal">
+                            <span class="close">&times;</span>
+                            <img class="modal-content" id="img01">
+                            <div id="caption"></div>
+                        </div>
+
+                    </div>
+                </td>
+                <td style="border-left: 1px solid">&nbsp;</td>
+                <td>
+                    <div>
+                        <details open>
+                            <summary>选择年龄段（必选）</summary>
+                            <div>
+                                <label><input type="checkbox" name="ageRange" value="18~70">18~70</label>
+                                <label><input type="checkbox" name="ageRange" value="18~25">18~25</label>
+                                <label><input type="checkbox" name="ageRange" value="26~35">26~35</label>
+                                <label><input type="checkbox" name="ageRange" value="36~60">36~60</label>
+                                <label><input type="checkbox" name="ageRange" value="61~70">61~70</label>
+                            </div>
+                        </details>
+                        <details open class="dimension_base">
+                            <summary>基本尺寸</summary>
+                            <div style="margin-left: 20px;">
+                                <label><input type="checkbox" name="dataType" value="体重/kg">体重/kg</label>
+                                <details>
+                                    <summary>立姿测量项目 （ 建议偏移量10 mm ）</summary>
+                                    <div>
+                                        <label><input type="checkbox" name="dataType" value="身高">身高</label>
+                                        <label><input type="checkbox" name="dataType" value="眼高">眼高</label>
+                                        <label><input type="checkbox" name="dataType" value="肩高">肩高</label>
+                                        <label><input type="checkbox" name="dataType" value="肘高">肘高</label>
+                                        <label><input type="checkbox" name="dataType" value="手功能高">手功能高</label>
+                                        <label><input type="checkbox" name="dataType" value="会阴高">会阴高</label>
+                                        <label><input type="checkbox" name="dataType" value="胫骨点高">胫骨点高</label>
+                                        <label><input type="checkbox" name="dataType" value="上臂长">上臂长</label>
+                                        <label><input type="checkbox" name="dataType" value="前臂长">前臂长</label>
+                                        <label><input type="checkbox" name="dataType" value="大腿长">大腿长</label>
+                                        <label><input type="checkbox" name="dataType" value="小腿长">小腿长</label>
+                                        <label><input type="checkbox" name="dataType" value="肩最大宽">肩最大宽</label>
+                                        <label><input type="checkbox" name="dataType" value="肩宽">肩宽</label>
+                                        <label><input type="checkbox" name="dataType" value="胸宽">胸宽</label>
+                                        <label><input type="checkbox" name="dataType" value="臀宽">臀宽</label>
+                                        <label><input type="checkbox" name="dataType" value="胸厚">胸厚</label>
+                                        <label><input type="checkbox" name="dataType" value="上臂围">上臂围</label>
+                                        <label><input type="checkbox" name="dataType" value="胸围">胸围</label>
+                                        <label><input type="checkbox" name="dataType" value="腰围">腰围</label>
+                                        <label><input type="checkbox" name="dataType" value="臀围">臀围</label>
+                                        <label><input type="checkbox" name="dataType" value="大腿围">大腿围</label>
+                                    </div>
+                                </details>
+                                <details>
+                                    <summary>坐姿测量项目 （ 建议偏移量44 mm ）</summary>
+                                    <div>
+                                        <label><input type="checkbox" name="dataType" value="坐高">坐高</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿颈椎点高">坐姿颈椎点高</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿眼高">坐姿眼高</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿肩高">坐姿肩高</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿肘高">坐姿肘高</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿大腿厚">坐姿大腿厚</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿膝高">坐姿膝高</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿腘高">坐姿腘高</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿两肘间宽">坐姿两肘间宽</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿臀宽">坐姿臀宽</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿臀-腘距">坐姿臀-腘距</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿臀-膝距">坐姿臀-膝距</label>
+                                        <label><input type="checkbox" name="dataType" value="坐姿下肢长">坐姿下肢长</label>
+                                    </div>
+                                </details>
+                                <details>
+                                    <summary>头部测量项目</summary>
+                                    <div>
+                                        <label><input type="checkbox" name="dataType" value="头宽">头宽</label>
+                                        <label><input type="checkbox" name="dataType" value="头长">头长</label>
+                                        <label><input type="checkbox" name="dataType" value="形态面长">形态面长</label>
+                                        <label><input type="checkbox" name="dataType" value="瞳孔间距">瞳孔间距</label>
+                                        <label><input type="checkbox" name="dataType" value="头围">头围</label>
+                                        <label><input type="checkbox" name="dataType" value="头矢状弧">头矢状弧</label>
+                                        <label><input type="checkbox" name="dataType"
+                                                value="耳屏间弧（头冠状弧）">耳屏间弧（头冠状弧）</label>
+                                        <label><input type="checkbox" name="dataType" value="头高">头高</label>
+                                    </div>
+                                </details>
+                                <details>
+                                    <summary>手部测量项目</summary>
+                                    <div>
+                                        <label><input type="checkbox" name="dataType" value="手长">手长</label>
+                                        <label><input type="checkbox" name="dataType" value="手宽">手宽</label>
+                                        <label><input type="checkbox" name="dataType" value="食指长">食指长</label>
+                                        <label><input type="checkbox" name="dataType" value="食指近位宽">食指近位宽</label>
+                                        <label><input type="checkbox" name="dataType" value="食指远位宽">食指远位宽</label>
+                                        <label><input type="checkbox" name="dataType" value="掌围">掌围</label>
+                                    </div>
+                                </details>
+                                <details>
+                                    <summary>足部测量项目</summary>
+                                    <div>
+                                        <label><input type="checkbox" name="dataType" value="足长">足长</label>
+                                        <label><input type="checkbox" name="dataType" value="足宽">足宽</label>
+                                        <label><input type="checkbox" name="dataType" value="足围">足围</label>
+                                    </div>
+                                </details>
+                            </div>
+                        </details>
+                        <details open class="dimension_functions">
+                            <summary>工作空间设计用功能尺寸</summary>
+                            <div>
+                                <label><input type="checkbox" name="sizeClassification" value="上肢前伸长">上肢前伸长</label>
+                                <label><input type="checkbox" name="sizeClassification" value="上肢功能前伸长">上肢功能前伸长</label>
+                                <label><input type="checkbox" name="sizeClassification" value="前臂加手前伸长">前臂加手前伸长</label>
+                                <label><input type="checkbox" name="sizeClassification"
+                                        value="前臂加手功能前伸长">前臂加手功能前伸长</label>
+                                <label><input type="checkbox" name="sizeClassification" value="两臂展开宽">两臂展开宽</label>
+                                <label><input type="checkbox" name="sizeClassification" value="两臂功能展开宽">两臂功能展开宽</label>
+                                <label><input type="checkbox" name="sizeClassification" value="两肘展开宽">两肘展开宽</label>
+                                <label><input type="checkbox" name="sizeClassification"
+                                        value="中指指尖点上举高">中指指尖点上举高</label>
+                                <label><input type="checkbox" name="sizeClassification" value="双臂功能上举高">双臂功能上举高</label>
+                                <label><input type="checkbox" name="sizeClassification"
+                                        value="坐姿中指指尖点上举高">坐姿中指指尖点上举高</label>
+                                <label><input type="checkbox" name="sizeClassification" value="直立跪姿体长">直立跪姿体长</label>
+                                <label><input type="checkbox" name="sizeClassification" value="直立跪姿体高">直立跪姿体高</label>
+                                <label><input type="checkbox" name="sizeClassification" value="俯卧姿体长">俯卧姿体长</label>
+                                <label><input type="checkbox" name="sizeClassification" value="俯卧姿体高">俯卧姿体高</label>
+                                <label><input type="checkbox" name="sizeClassification" value="爬姿体长">爬姿体长</label>
+                                <label><input type="checkbox" name="sizeClassification" value="爬姿体高">爬姿体高</label>
+                            </div>
+                        </details>
+                        <details open>
+                            <summary>手部</summary>
+                            <div>
+                                <label><input type="checkbox" name="hand" value="掌厚">掌厚</label>
+                                <label><input type="checkbox" name="hand" value="掌围">掌围</label>
+                                <label><input type="checkbox" name="hand" value="掌长">掌长</label>
+                                <label><input type="checkbox" name="hand" value="拇指长">拇指长</label>
+                                <label><input type="checkbox" name="hand" value="食指长">食指长</label>
+                                <label><input type="checkbox" name="hand" value="中指长">中指长</label>
+                                <label><input type="checkbox" name="hand" value="无名指长">无名指长</label>
+                                <label><input type="checkbox" name="hand" value="小指长">小指长</label>
+                                <label><input type="checkbox" name="hand" value="拇指宽">拇指宽</label>
+                                <label><input type="checkbox" name="hand" value="食指近位宽">食指近位宽</label>
+                                <label><input type="checkbox" name="hand" value="食指远位宽">食指远位宽</label>
+                                <label><input type="checkbox" name="hand" value="中指近位宽">中指近位宽</label>
+                                <label><input type="checkbox" name="hand" value="无名指近位宽">无名指近位宽</label>
+                                <label><input type="checkbox" name="hand" value="小指近位宽">小指近位宽</label>
+                            </div>
+                        </details>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="checkbox-container" id="geography-container" style="display: none">
+        <details>
+            <summary>参考地图</summary>
+            <div>
+                <iframe src="chinamap.html" frameborder="0" scrolling="no" width="100%" height="600vh"></iframe>
+        </details>
+        <details open>
+            <summary>选择地域段（必选）</summary>
+            <div>
+                <label><input type="checkbox" name="geoRange" value="东北华北区">东北华北区</label>
+                <label><input type="checkbox" name="geoRange" value="中西部区">中西部区</label>
+                <label><input type="checkbox" name="geoRange" value="长江中游区">长江中游区</label>
+                <label><input type="checkbox" name="geoRange" value="长江下游区">长江下游区</label>
+                <label><input type="checkbox" name="geoRange" value="两广福建区">两广福建区</label>
+                <label><input type="checkbox" name="geoRange" value="云贵川区">云贵川区</label>
+            </div>
+        </details>
+        <details open>
+            <summary>尺寸（必选）</summary>
+            <div>
+                <label><input type="checkbox" name="geoRect" value="身高/mm">身高/mm</label>
+                <label><input type="checkbox" name="geoRect" value="体重/kg">体重/kg</label>
+                <label><input type="checkbox" name="geoRect" value="胸围/mm">胸围/mm</label>
+            </div>
+        </details>
+
+    </div>
+    <div id="results"></div>
+    <script src="1.js"></script>
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+        // Get the image and insert it inside the modal - use its "alt" text as a caption
+        var img = document.getElementById("myImg");
+        var modalImg = document.getElementById("img01");
+        var captionText = document.getElementById("caption");
+        img.onclick = function () {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+            captionText.innerHTML = this.alt;
+        }
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+    </script>
+
+    <script>
+        function findClosestNumber(number, numbersArray) {
+            let closest = numbersArray[0];
+            let closestDiff = Math.abs(number - closest);
+
+            for (let i = 1; i < numbersArray.length; i++) {
+                let diff = Math.abs(number - numbersArray[i]);
+                if (diff < closestDiff) {
+                    closest = numbersArray[i];
+                    closestDiff = diff;
+                }
+            }
+
+            return closest;
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            // 获取需要互斥的复选框
+            const checkbox年龄 = document.querySelector('input[value="按年龄分段"]');
+            const checkbox地域 = document.querySelector('input[value="按地域分段"]');
+            const ageRangeCheckbox = document.querySelector('#ageRange-container');
+            const detailsElement = document.querySelector('#geography-container');
+
+            // 添加事件监听器
+            checkbox年龄.addEventListener('change', () => {
+                if (checkbox年龄.checked) {
+                    checkbox地域.checked = false;
+                    ageRangeCheckbox.style.display = 'block';
+                    detailsElement.style.display = 'none';
+                    detailsElement.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
+                    })
+                }
+            });
+            checkbox地域.addEventListener('change', () => {
+                if (checkbox地域.checked) {
+                    checkbox年龄.checked = false;
+                    ageRangeCheckbox.style.display = 'none';
+                    detailsElement.style.display = 'block';
+                    ageRangeCheckbox.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
+                    })
+                }
+            });
+
+            // 获取所有必要的元素
+            const percentile_selectAll = document.getElementById('percentile_selectAll');
+            const percentileCheckboxes = document.querySelectorAll('input[name="percentile"]:not(#selectAll)');
+            const gender_selectAll = document.getElementById('gender_selectAll');
+            const genderCheckboxes = document.querySelectorAll('input[name="gender"]:not(#selectAll)');
+            const dataTypeCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+
+            // 处理全选框的通用函数
+            function handleSelectAll(selectAllCheckbox, checkboxes) {
+                selectAllCheckbox.addEventListener('change', () => {
+                    const isChecked = selectAllCheckbox.checked;
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = isChecked;
+                    });
+                    displaySelectedData();
+                });
+
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                        selectAllCheckbox.checked = allChecked;
+                        displaySelectedData();
+                    });
+                });
+            }
+
+            // 处理数据类型框的点击事件
+            function handleDataTypeCheckboxes(checkboxes) {
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        displaySelectedData();
+                    });
+                });
+            }
+
+            // 初始化事件处理
+            handleSelectAll(percentile_selectAll, percentileCheckboxes);
+            handleSelectAll(gender_selectAll, genderCheckboxes);
+            handleDataTypeCheckboxes(dataTypeCheckboxes);
+
+
+            function indexed(percentile) {
+                const lists = [基本尺寸list, 工作空间设计用功能尺寸list];
+                for (let list of lists) {
+                    const index = list.indexOf(percentile);
+                    console.log(list, percentile, list.indexOf(percentile), +index + 1)
+                    if (index !== -1) {
+                        return +index + 1;
+                    }
+                }
+                return 0;
+            }
+
+            function displaySelectedData() {
+                const ageRanges = document.querySelectorAll('input[name="ageRange"]:checked');
+                const genders = document.querySelectorAll('input[name="gender"]:checked');
+                const dataTypes = document.querySelectorAll('input[name="dataType"]:checked');
+                const sizeClassifications = document.querySelectorAll('input[name="sizeClassification"]:checked');
+                const hands = document.querySelectorAll('input[name="hand"]:checked');
+                const percentiles = document.querySelectorAll('input[name="percentile"]:checked');
+                const geoRanges = document.querySelectorAll('input[name="geoRange"]:checked');
+                const geoRects = document.querySelectorAll('input[name="geoRect"]:checked');
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = ''; // 清空之前的显示结果
+
+                function generateCombinations(ageRange, gender, sizeType, dataTypes, percentiles) {
+                    const combinations = [];
+                    dataTypes.forEach(dataType => {
+                        percentiles.forEach(percentile => {
+                            if (percentile.value === '全选') return;
+                            combinations.push({
+                                ageRange: ageRange.value,
+                                gender: gender.value,
+                                dataType: dataType.value,
+                                percentile: percentile.value,
+                                sizeType: sizeType,
+                            });
+                        });
+                    });
+                    return combinations;
+                }
+
+                if (checkbox年龄.checked) {
+                    const combinations = [];
+                    ageRanges.forEach(ageRange => {
+                        genders.forEach(gender => {
+                            if (gender.value === '全选') return;
+
+                            // 生成基本尺寸的组合
+                            const basicSizeCombinations = generateCombinations(ageRange, gender, '基本尺寸', dataTypes, percentiles);
+                            combinations.push(...basicSizeCombinations);
+
+                            // 生成工作空间设计用功能尺寸的组合
+                            const functionalSizeCombinations = generateCombinations(ageRange, gender, '工作空间设计用功能尺寸', sizeClassifications, percentiles);
+                            combinations.push(...functionalSizeCombinations);
+                            // 生成工作空间设计用功能尺寸的组合
+                            combinations.push(...generateCombinations(ageRange, gender, '手部', hands, percentiles));
+                        });
+                    });
+                    // 根据组合生成结果
+                    combinations.forEach(combination => {
+                        const { ageRange, gender, dataType, percentile, sizeType } = combination;
+                        // console.log(ageRange, gender, dataType, percentile, sizeType)
+                        let unit = 'mm'; // 默认单位为 mm
+                        if (dataType.includes('体重')) {
+                            unit = 'kg'; // 如果是体重，单位为 kg
+                        }
+                        if (sizeType == '手部') {
+                            const 手长 = bodySizeData['基本尺寸'][ageRange][gender]['手长'][percentile];
+                            const 手宽 = bodySizeData['基本尺寸'][ageRange][gender]['手宽'][percentile];
+                            const handvalues = bodySizeData[sizeType][gender];
+                            // const 型号 = handvalues['型号']
+                            // const 型号keys = Object.keys(handvalues['型号'])
+                            // const closestNumber = findClosestNumber(手长, 型号keys);
+                            // const 手宽范围 = 型号[closestNumber];//!
+                            const 控制部位 = handvalues['控制部位']
+                            const parameters = 控制部位[dataType]
+                            const 公式 = `Y = ${parameters[0]} + ${parameters[1]} * ${parameters[2]}`
+                            let results;
+                            if (parameters[2] == 'X') {
+                                results = parameters[0] + 手长 * parameters[1];
+                            } else if (parameters[2] == 'X2') {
+                                results = parameters[0] + 手宽 * parameters[1];
+                            }
+                            // console.log(手长, 型号keys, closestNumber, 手宽范围, 控制部位, parameters, 公式,results)
+                            const resultText = `<p><strong>${[sizeType, ageRange, gender, dataType, percentile].join(' - ')} ( ${公式} ):</strong> ${results} ${unit}</p>`;
+                            resultsDiv.innerHTML += resultText;
+
+                        }
+                        else {
+                            const value = bodySizeData[sizeType][ageRange][gender][dataType][percentile];
+                            const resultText = `<p><strong>${[sizeType, indexed(dataType), ageRange, gender, dataType, percentile].join(' - ')}:</strong> ${value} ${unit}</p>`;
+                            resultsDiv.innerHTML += resultText;
+                        }
+
+                        // const resultText = `<p><strong>${[sizeType, indexed(dataType), ageRange, gender, dataType, percentile].join(' - ')}:</strong> ${value} ${unit}</p>`;
+                        // resultsDiv.innerHTML += resultText;
+                    });
+                }
+                else if (checkbox地域.checked) {
+                    const combinations = [];
+                    console.log(geoRanges, geoRects, genders, percentiles)
+                    geoRanges.forEach(geoRange => {
+                        geoRects.forEach(geoRect => {
+                            genders.forEach(gender => {
+                                percentiles.forEach(percentile => {
+                                    if (percentile.value === '全选') return;
+                                    console.log(geoRange, geoRect, gender, percentile)
+                                    combinations.push({
+                                        geoRange: geoRange.value,
+                                        geoRect: geoRect.value,
+                                        gender: gender.value,
+                                        percentile: percentile.value,
+                                        value: bodySizeData['地域'][gender.value][geoRange.value][geoRect.value]
+                                    });
+                                });
+                            });
+                        });
+                    });
+                    console.log(combinations)
+                    combinations.forEach(combination => {
+                        const { geoRange, geoRect, gender, percentile, value } = combination;
+                        console.log(geoRange, geoRect, gender, percentile, value)
+                        let unit = 'mm'; // 默认单位为 mm
+                        if (geoRect.includes('体重/kg')) {
+                            unit = 'kg'; // 如果是体重，单位为 kg
+                        }
+                        const M = value['均值'];
+                        const SD = value['标准差'];
+                        const Pcalc = M + PN[percentile] * SD;
+                        console.log(value, M, SD, percentile, PN[percentile], Pcalc)
+                        // const value = bodySizeData[sizeType][ageRange][gender][dataType][percentile];
+                        const resultText = `<p><strong>${[geoRange, gender, geoRect, percentile].join(' - ')}:</strong> ${Pcalc} ${unit}</p>`;
+                        resultsDiv.innerHTML += resultText;
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
